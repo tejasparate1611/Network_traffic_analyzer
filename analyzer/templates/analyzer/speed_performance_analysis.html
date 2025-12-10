@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed & Performance Analysis</title>
+
+    <!-- Custom CSS for dark theme -->
+    <style>
+        body {
+            background-color: #121212; /* Dark background */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff; /* White text */
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 60%;
+            margin: 20px auto;
+            padding: 30px;
+            background-color: #1e1e1e; /* Dark card background */
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Soft shadow */
+        }
+        h1 {
+            text-align: center;
+            color: #f5a623; /* Light orange heading */
+            margin-bottom: 30px;
+        }
+        .result {
+            margin: 15px 0;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 8px;
+            text-align: center;
+            background-color: #2b2b2b; /* Slightly lighter background for results */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Soft shadow */
+        }
+        .result strong {
+            color: #00d1b2; /* Light cyan color for labels */
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px auto;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Speed & Performance Analysis</h1>
+        
+        <!-- Performance Results -->
+        <div class="result download">
+            <strong>Download Speed: </strong> {{ download_speed }} Mbps
+        </div>
+        <div class="result upload">
+            <strong>Upload Speed: </strong> {{ upload_speed }} Mbps
+        </div>
+        <div class="result ping">
+            <strong>Ping: </strong> {{ ping }} ms
+        </div>
+        <div class="result packet-loss">
+            <strong>Packet Loss: </strong> {{ packet_loss }} %
+        </div>
+        <div class="result jitter">
+            <strong>Jitter: </strong> {{ jitter }} ms
+        </div>
+        <div class="result latency">
+            <strong>Latency: </strong> {{ latency }} ms
+        </div>
+        <div class="result throughput">
+            <strong>Throughput: </strong> {{ throughput }} Mbps
+        </div>
+        <div class="result connection-time">
+            <strong>Connection Time: </strong> {{ connection_time }} seconds
+        </div>
+        <div class="result max-throughput">
+            <strong>Max Throughput: </strong> {{ max_throughput }} Mbps
+        </div>
+        <div class="result average-throughput">
+            <strong>Average Throughput: </strong> {{ average_throughput }} Mbps
+        </div>
+
+        <!-- Retest Button -->
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'speed_performance_analysis' %}" class="btn">Retest Speed</a>
+        </div>
+    </div>
+
+</body>
+</html>

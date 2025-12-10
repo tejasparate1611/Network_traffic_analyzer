@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packet Sniffer - Ethernet Frame</title>
+    <style>
+        body {
+            background-color: #121212; /* Dark background */
+            font-family: Arial, sans-serif;
+            color: #ffffff; /* White text */
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            color: #00bcd4; /* Light cyan heading */
+            text-align: center;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px auto;
+            background-color: #1e1e1e; /* Dark table background */
+            border-radius: 8px; /* Rounded corners */
+            overflow: hidden; /* Rounded corners effect */
+        }
+        th, td {
+            border: 1px solid #444; /* Darker border */
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #3a3a3a; /* Darker header background */
+            color: #00bcd4; /* Light cyan color for header text */
+            font-weight: bold;
+        }
+        td {
+            color: #e0e0e0; /* Light grey color for data text */
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            background-color: #2c2c2c; /* Container background */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Soft shadow */
+        }
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 12px 25px;
+            font-size: 16px;
+            background-color: #00bcd4; /* Light cyan button */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s; /* Transition for hover effect */
+        }
+        button:hover {
+            background-color: #0097a7; /* Darker cyan on hover */
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        let refreshInterval;
+
+        function refreshData() {
+            $.get("{% url 'get_latest_packets' %}", function(data) {
+                const packetTableBody = document.querySelector('#packet-data tbody');
+                packetTableBody.innerHTML = '';  // Clear existing table rows
+
+                data.packets.forEach(packet => {
+                    const row = `
+                        <tr>
+                            <td>${packet.destination}</td>
+                            <td>${packet.source}</td>
+                            <td>${packet.protocol}</td>
+                            <td>${packet.packet_type}</td>
+                            <td>${packet.segment}</td>
+                            <td>${packet.source_port}</td>
+                            <td>${packet.destination_port}</td>
+                            <td>${packet.sequence}</td>
+                            <td>${packet.ack}</td>
+                        </tr>
+                    `;
+                    packetTableBody.innerHTML += row;
+                });
+            });
+        }
+
+        $(document).ready(function() {
+            $("form").on("submit", function(e) {
+                e.preventDefault(); // Prevent form from submitting normally
+
+                const actionUrl = $(this).attr("action");
+
+                $.get(actionUrl, function(response) {
+                    if (actionUrl.includes("start_sniffing")) {
+                        if (refreshInterval) {
+                            clearInterval(refreshInterval);  // Clear any existing interval
+                        }
+                        refreshInterval = setInterval(refreshData, 3000);  // Refresh every 3 seconds
+                        refreshData(); // Initial fetch to populate data immediately
+                    } else if (actionUrl.includes("stop_sniffing")) {
+                        clearInterval(refreshInterval);  // Stop refreshing data
+                        refreshData(); // Fetch the last set of data to ensure it's visible
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Ethernet Frame</h1>
+    <div class="container">
+        <form action="{% url 'start_sniffing' %}" method="get">
+            <button type="submit">Start Sniffing Packets</button>
+        </form>
+        <form action="{% url 'stop_sniffing' %}" method="get">
+            <button type="submit">Stop Sniffing Packets</button>
+        </form>
+
+        <div id="packet-data">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Destination</th>
+                        <th>Source</th>
+                        <th>Protocol</th>
+                        <th>Packet Type</th>
+                        <th>Segment</th>
+                        <th>Source Port</th>
+                        <th>Destination Port</th>
+                        <th>Sequence</th>
+                        <th>Acknowledgement</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
